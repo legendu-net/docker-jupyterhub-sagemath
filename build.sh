@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t dclong/sagemath .
+docker build -t dclong/jupyterhub-sagemath .
