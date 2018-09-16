@@ -66,7 +66,7 @@ docker run -d \
     -e DOCKER_USER_ID=`id -u` \
     -e DOCKER_PASSWORD=`id -un` \
     -v /workdir:/workdir \
-    dclong/jupyterhub-jupyter
+    dclong/jupyterhub-sagemath
 ```
 
 ## Use the Jupyter Server
