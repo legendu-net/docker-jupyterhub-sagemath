@@ -1,4 +1,4 @@
-# [dclong/jupyterhub-sagemath](https://hub.docker.com/r/dclong/jupyterhub-sagemath/)
+# dclong/jupyterhub-sagemath [@DockerHub](https://hub.docker.com/r/dclong/jupyterhub-sagemath/) | [@GitHub](https://github.com/dclong/docker-jupyterhub-sagemath)
 
 JupyterHub with SageMath (with Python 3.5) in Docker. 
 **It is recommended that you use the image
