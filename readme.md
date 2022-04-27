@@ -1,100 +1,121 @@
 # dclong/jupyterhub-sagemath [@DockerHub](https://hub.docker.com/r/dclong/jupyterhub-sagemath/) | [@GitHub](https://github.com/dclong/docker-jupyterhub-sagemath)
 
-JupyterHub with SageMath (with Python 3.5) in Docker. 
+JupyterHub with SageMath in Docker. 
 **It is recommended that you use the image
 [dclong/jupyterhub-ds](https://hub.docker.com/r/dclong/jupyterhub-ds/)
 for data science related work.**
 
-## Detailed Information 
-
-OS: Ubuntu 18.04  
-Desktop Environment: None  
-Remote Desktop: None  
-Jupyter Notebook: 5.6.0  
-Jupyter Kernels:  
-- Python 3.6.5 
-- SageMath
-
 ## Prerequisite
 You need to [install Docker](http://www.legendu.net/en/blog/docker-installation/) before you use this Docker image.
 
-
 ## Usage in Linux/Unix
 
-### Prerequisites
-You must have Docker installed. 
-If you are on Ubuntu, 
-the just use the command below to install the community edition of Docker.
-```
-sudo apt-get install docker.io
-```
-If you'd rather install the enterprise edition
-or if you are on other platforms, 
-please refer to the offical Docker doc [Install Docker](https://docs.docker.com/install/).
+Please refer to the section
+[Usage](http://www.legendu.net/en/blog/my-docker-images/#usage)
+of the post [My Docker Images](http://www.legendu.net/en/blog/my-docker-images/) 
+for detailed instruction on how to use the Docker image.
 
-### Pull the Docker Image
+The following command starts a container 
+and mounts the current working directory and `/home` on the host machine 
+to `/workdir` and `/home_host` in the container respectively.
 ```
-docker pull dclong/jupyterhub-jupyter
-```
-For people in mainland of China, 
-please refer to the post 
-[Speedup Docker Pulling and Pushing](http://www.legendu.net/en/blog/speedup-docker-pulling-and-pushing/) 
-on ways to speed up pushing/pulling of Docker images. 
-If you don't bother, 
-then just use the command below. 
-```
-docker pull registry.docker-cn.com/dclong/jupyterhub-sagemath
-```
-
-### Start a Container
-
-Below are some Docker command arguments explained. 
-These are for properly handling file permissions in the Docker container and on the host. 
-Keep the default if you don't know what are the best to use. 
-`DOCKER_PASSWORD` is probably the only argument you want to and should change. 
-
-- `DOCKER_USER`: The user to be created (dynamically) in the container. 
-    By default, the name of the current user on the host is used. 
-- `DOCKER_USER_ID`: The ID of the user to be created in the container. 
-    By default, the ID of the current user on the host is used. 
-- `DOCKER_PASSWORD`: The password of the user to be created. 
-    By default, it's the same as the user name. 
-    You'd better change it for security reasons. 
-    Of course, users can always change it later using the command `passwd`.
-
-```
-docker run -d \
+docker run -d --init \
+    --hostname jupyterhub-ds \
     --log-opt max-size=50m \
     -p 8000:8000 \
-    -e DOCKER_USER=`id -un` \
-    -e DOCKER_USER_ID=`id -u` \
-    -e DOCKER_PASSWORD=`id -un` \
-    -v /workdir:/workdir \
-    dclong/jupyterhub-sagemath
+    -p 5006:5006 \
+    -e DOCKER_USER=$(id -un) \
+    -e DOCKER_USER_ID=$(id -u) \
+    -e DOCKER_PASSWORD=$(id -un) \
+    -e DOCKER_GROUP_ID=$(id -g) \
+    -e DOCKER_ADMIN_USER=$(id -un) \
+    -v "$(pwd)":/workdir \
+    -v "$(dirname $HOME)":/home_host \
+    dclong/jupyterhub-sagemath /scripts/sys/init.sh
+```
+Use the image with the `next` tag (which is the testing/next version of dclong/jupyterhub-ds).
+```
+docker run -d --init \
+    --hostname jupyterhub-ds \
+    --log-opt max-size=50m \
+    -p 8000:8000 \
+    -p 5006:5006 \
+    -e DOCKER_USER=$(id -un) \
+    -e DOCKER_USER_ID=$(id -u) \
+    -e DOCKER_PASSWORD=$(id -un) \
+    -e DOCKER_GROUP_ID=$(id -g) \
+    -e DOCKER_ADMIN_USER=$(id -un) \
+    -v "$(pwd)":/workdir \
+    -v "$(dirname $HOME)":/home_host \
+    dclong/jupyterhub-sagemath:next /scripts/sys/init.sh
+```
+The following command (*only works on Linux*) does the same as the above one 
+except that it limits the use of CPU and memory.
+```
+docker run -d --init \
+    --hostname jupyterhub-ds \
+    --log-opt max-size=50m \
+    --memory=$(($(head -n 1 /proc/meminfo | awk '{print $2}') * 4 / 5))k \
+    --cpus=$(($(nproc) - 1)) \
+    -p 8000:8000 \
+    -p 5006:5006 \
+    -e DOCKER_USER=$(id -un) \
+    -e DOCKER_USER_ID=$(id -u) \
+    -e DOCKER_PASSWORD=$(id -un) \
+    -e DOCKER_GROUP_ID=$(id -g) \
+    -e DOCKER_ADMIN_USER=$(id -un) \
+    -v "$(pwd)":/workdir \
+    -v "$(dirname $HOME)":/home_host \
+    dclong/jupyterhub-sagemath /scripts/sys/init.sh
+```
+Use the image with the `next` tag (which is the testing/next version of dclong/jupyterhub-ds).
+```
+docker run -d --init \
+    --hostname jupyterhub-ds \
+    --log-opt max-size=50m \
+    --memory=$(($(head -n 1 /proc/meminfo | awk '{print $2}') * 4 / 5))k \
+    --cpus=$(($(nproc) - 1)) \
+    -p 8000:8000 \
+    -p 5006:5006 \
+    -e DOCKER_USER=$(id -un) \
+    -e DOCKER_USER_ID=$(id -u) \
+    -e DOCKER_PASSWORD=$(id -un) \
+    -e DOCKER_GROUP_ID=$(id -g) \
+    -e DOCKER_ADMIN_USER=$(id -un) \
+    -v "$(pwd)":/workdir \
+    -v "$(dirname $HOME)":/home_host \
+    dclong/jupyterhub-sagemath:next /scripts/sys/init.sh
+```
+### Launch a JupyterLab Instead of JupyterHub 
+
+You can still launch a JupyterLab service using this Docker image. 
+```
+docker run -d --init \
+    --hostname jupyterlab \
+    --log-opt max-size=50m \
+    --memory=$(($(head -n 1 /proc/meminfo | awk '{print $2}') * 4 / 5))k \
+    --cpus=$(($(nproc) - 1)) \
+    -p 8888:8888 \
+    -e DOCKER_USER=$(id -un) \
+    -e DOCKER_USER_ID=$(id -u) \
+    -e DOCKER_PASSWORD=$(id -un) \
+    -e DOCKER_GROUP_ID=$(id -g) \
+    -e DOCKER_ADMIN_USER=$(id -un) \
+    -v "$(pwd)":/workdir \
+    -v "$(dirname $HOME)":/home_host \
+    dclong/jupyterhub-sagemath /scripts/sys/init.sh /scripts/sys/launch_jlab.sh
 ```
 
-## Use the Jupyter Server
+## [Use the JupyterHub Server](http://www.legendu.net/en/blog/my-docker-images/#use-the-jupyterhub-server)
 
-Open your browser and and visit `your_host_ip:8888` 
-where `your_host_ip` is the URL/ip address of your server. 
-You will be asked for token to login.
-The token can be found using the command below,
-where `container_id` is the name/ID of the launched JupyterLab container.
-```
-docker exec -u `id -un` container_id jupyter notebook list
-``` 
+## [Add a New User to the JupyterHub Server](http://www.legendu.net/en/blog/my-docker-images/#add-a-new-user-to-the-jupyterhub-server)
 
-## Known Issues
+## [Use Spark in JupyterLab Notebook](http://www.legendu.net/en/blog/my-docker-images/#use-spark-in-jupyterlab-notebook)
 
-1. The subprocess managment issue. 
-    This is not an issue at in most use cases. 
-    This Docker image launch service using a shell script 
-    so there won't be orphan subprocesses 
-    when the process of the Docker container is get killed.
-    However, launching by shell script is not the best way for managing processes.
-    I might switch to the [Supervisor](https://github.com/Supervisor/supervisor) for process management 
-    or use the base image of [pushion/ubuntu](https://github.com/phusion/baseimage-docker) in future. 
+## [Log Information](http://www.legendu.net/en/blog/my-docker-images/#docker-container-logs)
 
-## About the Author
+## [Detailed Information](http://www.legendu.net/en/blog/my-docker-images/#list-of-images-and-detailed-information) 
 
-[Personal Blog](http://www.legendu.net)   |   [GitHub](https://github.com/dclong)   |   [Bitbucket](https://bitbucket.org/dclong/)   |   [LinkedIn](http://www.linkedin.com/in/ben-chuanlong-du-1239b221/)
+## [Known Issues](http://www.legendu.net/en/blog/my-docker-images/#known-issues)
+
+## [About the Author](http://www.legendu.net/pages/about)
