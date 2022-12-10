@@ -1,9 +1,16 @@
 # dclong/jupyterhub-sagemath [@DockerHub](https://hub.docker.com/r/dclong/jupyterhub-sagemath/) | [@GitHub](https://github.com/dclong/docker-jupyterhub-sagemath)
 
-JupyterHub with SageMath in Docker. 
-**It is recommended that you use the image
+JupyterHub with 
+[SageMath](https://www.sagemath.org/)
+in Docker. 
+This Docker image is best for math related work,
+especially calculus related.
+**
+For data science related work,
+the Docker image
 [dclong/jupyterhub-ds](https://hub.docker.com/r/dclong/jupyterhub-ds/)
-for data science related work.**
+is recommended.
+**
 
 ## Prerequisite
 You need to [install Docker](http://www.legendu.net/en/blog/docker-installation/) before you use this Docker image.
