@@ -2,4 +2,4 @@
 FROM dclong/jupyterhub
 # GIT: https://github.com/legendu-net/docker-jupyterhub.git
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y sagemath-jupyter
+RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install sagemath-jupyter
